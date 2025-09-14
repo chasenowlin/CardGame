@@ -1,8 +1,6 @@
-package GameMechanics;
+package CardBasics;
 
 import java.util.Collections;
-
-import CardBasics.*;
 
 public class Dealer extends Player {
 

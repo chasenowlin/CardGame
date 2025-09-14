@@ -1,6 +1,6 @@
 package GameMechanics;
 
-import CardBasics.Deck;
+import CardBasics.*;
 
 public class GameLoop {
 

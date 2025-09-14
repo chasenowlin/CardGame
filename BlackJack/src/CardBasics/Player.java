@@ -1,7 +1,6 @@
-package GameMechanics;
-import java.util.ArrayList;
+package CardBasics;
 
-import CardBasics.*;
+import java.util.ArrayList;
 
 public class Player {
 
