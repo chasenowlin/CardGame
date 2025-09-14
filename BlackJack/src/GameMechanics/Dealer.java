@@ -20,6 +20,9 @@ public class Dealer extends Player {
     }
 
     public void dealOut(Player p) {
+        p.resetHand();
+        resetHand();
+
         p.addToHand(gameDeck.takeTopCard());
         addToHand(gameDeck.takeTopCard());
         p.addToHand(gameDeck.takeTopCard());

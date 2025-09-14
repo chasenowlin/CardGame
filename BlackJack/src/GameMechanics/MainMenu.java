@@ -15,9 +15,11 @@ public class MainMenu implements OnScreen {
     private static JButton submitName;
     private static JTextField namePrompt;
 
-    private static String username = null;
+    public static String username = null;
 
-    public static String startingWindow() {
+    public static void startingWindow() {
+        username = null;
+
         mainMenu = new JFrame("BlackJack Menu");
 		mainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainMenu.setLayout(null);
@@ -37,18 +39,18 @@ public class MainMenu implements OnScreen {
         title.setSize(800,100);
         title.setFont(new Font("Arial", Font.BOLD, 80));
 
-        namePrompt = new JTextField("Enter Your Name Here");
+        namePrompt = new JTextField("Sign Your Name Plate");
         namePrompt.setHorizontalAlignment(SwingConstants.CENTER);
-        namePrompt.setLocation(screenWidth / 2 - 400, screenHeight / 2);
-        namePrompt.setSize(800,100);
+        namePrompt.setLocation(screenWidth / 2 - 300, screenHeight / 2);
+        namePrompt.setSize(600,100);
         namePrompt.setFont(new Font("Arial", Font.PLAIN, 50));
         namePrompt.setOpaque(true);
-        namePrompt.setBackground(Color.LIGHT_GRAY);
-        namePrompt.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 5));
+        namePrompt.setBackground(new Color(213, 181, 110));
+        namePrompt.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
         namePrompt.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (namePrompt.getText().equals("Enter Your Name Here")) {
+                if (namePrompt.getText().equals("Sign Your Name Plate")) {
                     namePrompt.setText("");
                 }
             }
@@ -56,7 +58,7 @@ public class MainMenu implements OnScreen {
             @Override
             public void focusLost(FocusEvent e) {
                 if (namePrompt.getText().isEmpty()) {
-                    namePrompt.setText("Enter Your Name Here");
+                    namePrompt.setText("Sign Your Name Plate");
                 }
             }
         });
@@ -81,7 +83,7 @@ public class MainMenu implements OnScreen {
         mainMenu.repaint();
         mainMenu.setVisible(true);
 
-        while (username == null || username .equals("Enter Your Name Here")) {
+        while (username == null || username .equals("Sign Your Name Plate")) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
@@ -89,7 +91,6 @@ public class MainMenu implements OnScreen {
             }
         }
         mainMenu.dispose();
-        return username;
     }
 
      

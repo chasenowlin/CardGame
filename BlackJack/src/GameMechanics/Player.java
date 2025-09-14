@@ -28,5 +28,9 @@ public class Player {
         currentHand.addCard(c);
     }
 
+    public void resetHand() {
+        currentHand = new Hand();
+    }
+
 
 }
