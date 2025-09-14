@@ -11,10 +11,10 @@ public class Card implements Rank, Suit{
 
     @Override
     public int getValue() {
-        if (rank == "A") {
+        if (rank.equals("A")) {
             return 11; //aceValueSet();
         }
-        else if (rank == "J" || rank == "Q" || rank == "K") {
+        else if (rank.equals("J") || rank.equals("Q") || rank.equals("K")) {
             return 10;
         }
         else {
