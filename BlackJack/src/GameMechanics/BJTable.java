@@ -29,7 +29,15 @@ public class BJTable implements OnScreen {
     private static JLabel dSayBust;
 
     private static JLabel infoScreen;
-    private static JLabel scoreBoard;
+
+    private static JPanel scoreBoard;
+    private static JLabel scoreTitle;
+    private static JLabel scoreBreak;
+    private static JLabel lossScore;
+    private static JLabel winScore;
+
+    private static int wins = 0;
+    private static int losses = 0;
 
     private static Timer timer;
 
@@ -105,6 +113,35 @@ public class BJTable implements OnScreen {
         infoScreen.setHorizontalAlignment(SwingConstants.CENTER);
         infoScreen.setVerticalAlignment(SwingConstants.CENTER);
 
+        scoreBoard = new JPanel();
+        scoreBoard.setLocation(screenWidth - screenWidth / 25 - 300, 20);
+        scoreBoard.setSize(250,300);
+        scoreBoard.setOpaque(true);
+        scoreBoard.setBackground(Color.WHITE);
+        scoreBoard.setForeground(Color.BLACK);
+        scoreBoard.setFont(new Font("Arial", Font.BOLD, 25));
+        scoreBoard.setBorder(BorderFactory.createLineBorder(new Color(137,81,41), 10));
+        scoreBoard.setLayout(new GridLayout(4,1));
+
+        scoreTitle = new JLabel(("Scoreboard"));
+        scoreTitle.setFont(new Font("Arial", Font.BOLD, 25));
+        scoreTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreTitle.setVerticalAlignment(SwingConstants.BOTTOM);
+
+        scoreBreak = new JLabel(("-------------------------"));
+        scoreBreak.setFont(new Font("Arial", Font.BOLD, 25));
+        scoreBreak.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreBreak.setVerticalAlignment(SwingConstants.TOP);
+
+        winScore = new JLabel("Wins: " + wins);
+        winScore.setFont(new Font("Arial", Font.BOLD, 25));
+        winScore.setHorizontalAlignment(SwingConstants.CENTER);
+        winScore.setVerticalAlignment(SwingConstants.TOP);
+
+        lossScore = new JLabel("Losses: " + losses);
+        lossScore.setFont(new Font("Arial", Font.BOLD, 25));
+        lossScore.setHorizontalAlignment(SwingConstants.CENTER);
+        lossScore.setVerticalAlignment(SwingConstants.TOP);
 
         frame.add(nesterDealer);
         frame.add(divider);
@@ -114,6 +151,11 @@ public class BJTable implements OnScreen {
         divider.add(dNamePlate);
         divider.add(uNamePlate);
         divider.add(infoScreen);
+        divider.add(scoreBoard);
+        scoreBoard.add(scoreTitle);
+        scoreBoard.add(scoreBreak);
+        scoreBoard.add(winScore);
+        scoreBoard.add(lossScore);
 
         frame.setVisible(true);
 
@@ -161,11 +203,17 @@ public class BJTable implements OnScreen {
             if (c.getSuit() == ' ' || dBust) {
                 cardColor = Color.DARK_GRAY;
                 dCardSlots.setBackground(Color.LIGHT_GRAY);
-            } else if (c.getSuit() == '♤' || c.getSuit() == '♧') {
+            } else if (c.getSuit() == '♤') {
                 cardColor = Color.BLACK;
                 dCardSlots.setBackground(new Color(255,250,240));
+            } else if (c.getSuit() == '♧') {
+                cardColor = new Color(6,64,43);
+                dCardSlots.setBackground(new Color(255,250,240));
+            } else if (c.getSuit() == '♡') {
+                cardColor = new Color(220,20,60);
+                dCardSlots.setBackground(new Color(255,250,240));
             } else {
-                cardColor = Color.RED;
+                cardColor = new Color(255, 95, 31);
                 dCardSlots.setBackground(new Color(255,250,240));
             }
             dCardSlots.setForeground(cardColor);
@@ -184,12 +232,17 @@ public class BJTable implements OnScreen {
             if (c.getSuit() == ' ' || uBust) {
                 cardColor = Color.DARK_GRAY;
                 uCardSlots.setBackground(Color.LIGHT_GRAY);
-            }
-            else if (c.getSuit() == '♤' || c.getSuit() == '♧') {
+            } else if (c.getSuit() == '♤') {
                 cardColor = Color.BLACK;
                 uCardSlots.setBackground(new Color(255,250,240));
+            } else if (c.getSuit() == '♧') {
+                cardColor = new Color(6,64,43);
+                uCardSlots.setBackground(new Color(255,250,240));
+            } else if (c.getSuit() == '♡') {
+                cardColor = new Color(220,20,60);
+                uCardSlots.setBackground(new Color(255,250,240));
             } else {
-                cardColor = Color.RED;
+                cardColor = new Color(255, 95, 31);
                 uCardSlots.setBackground(new Color(255,250,240));
             }
             uCardSlots.setForeground(cardColor);
@@ -224,9 +277,11 @@ public class BJTable implements OnScreen {
         divider.remove(startRound);
 
         for (Component c: divider.getComponents()) {
-            if (((JLabel) c).getText().equals("Busted!")) {
-                divider.remove(c);
-            }
+            if (c instanceof JLabel) {
+                if (((JLabel) c).getText().equals("Busted!")) {
+                    divider.remove(c);
+                }
+            }   
         }
         infoScreen.setText("Game in Progress");
         
@@ -320,6 +375,15 @@ public class BJTable implements OnScreen {
             }
 
             infoScreen.setText(w.getPlayerName() + " Wins! " + scoreW + " - " + scoreL);
+
+            if (w.getPlayerName().equals("Dealer")) {
+                losses++;
+            } else {
+                wins++;
+            }
+
+            winScore.setText("Wins: " + wins);
+            lossScore.setText("Losses: " + losses);
         }
     }
 }

@@ -37,6 +37,7 @@ public class MainMenu implements OnScreen {
         title.setVerticalAlignment(SwingConstants.CENTER);
         title.setLocation(screenWidth / 2 - 400, screenHeight / 4);
         title.setSize(800,100);
+        title.setForeground(Color.BLACK);
         title.setFont(new Font("Arial", Font.BOLD, 80));
 
         namePrompt = new JTextField("Sign Your Name Plate");
@@ -66,7 +67,7 @@ public class MainMenu implements OnScreen {
         submitName = new JButton("SUBMIT");
         submitName.setLocation(screenWidth / 2 - 100, screenHeight / 2 + 200);
         submitName.setSize(200,50);
-        submitName.setBackground(Color.WHITE);
+        submitName.setBackground(Color.LIGHT_GRAY);
         submitName.setFont(new Font("Arial", Font.BOLD, 20));
         submitName.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 8));
         submitName.addActionListener(new ActionListener() {
