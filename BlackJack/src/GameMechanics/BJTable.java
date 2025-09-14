@@ -25,6 +25,11 @@ public class BJTable implements OnScreen {
     private static JButton startRound;
     private static JButton chooseHit;
     private static JButton chooseStand;
+    private static JLabel uSayBust;
+    private static JLabel dSayBust;
+
+    private static JLabel infoScreen;
+    private static JLabel scoreBoard;
 
     private static Timer timer;
 
@@ -89,6 +94,18 @@ public class BJTable implements OnScreen {
         userSide.setLayout(new GridLayout(1,10));
         ((GridLayout) userSide.getLayout()).setHgap(20);
 
+        infoScreen = new JLabel("WELCOME");
+        infoScreen.setLocation(screenWidth / 25, screenHeight / 6 - 85);
+        infoScreen.setSize(400,150);
+        infoScreen.setOpaque(true);
+        infoScreen.setBackground(Color.BLACK);
+        infoScreen.setForeground(Color.WHITE);
+        infoScreen.setFont(new Font("Arial", Font.BOLD, 25));
+        infoScreen.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 10));
+        infoScreen.setHorizontalAlignment(SwingConstants.CENTER);
+        infoScreen.setVerticalAlignment(SwingConstants.CENTER);
+
+
         frame.add(nesterDealer);
         frame.add(divider);
         frame.add(nesterUser);
@@ -96,6 +113,7 @@ public class BJTable implements OnScreen {
         nesterDealer.add(dealerSide);
         divider.add(dNamePlate);
         divider.add(uNamePlate);
+        divider.add(infoScreen);
 
         frame.setVisible(true);
 
@@ -109,7 +127,7 @@ public class BJTable implements OnScreen {
         timer.start();
 	}
 
-    public static void printBoard(String turn, Dealer dealer, Player user) {
+    public static void printBoard(String turn, Dealer dealer, Player user, Boolean dBust, Boolean uBust) {
         userSide.removeAll();
         dealerSide.removeAll();
 
@@ -132,62 +150,59 @@ public class BJTable implements OnScreen {
                 userCards.add(c);
             }
         }
-        System.out.println("--------------------------------------");
-        System.out.println("Dealer's Hand:");
         for (Card c: dealerCards) {
             dCardSlots = new JLabel(" " + c.getRank() + c.getSuit());
             dCardSlots.setPreferredSize(new Dimension(150,230));
             dCardSlots.setOpaque(true);
-            dCardSlots.setBackground(new Color(255,250,240));
             dCardSlots.setFont(new Font("Arial Unicode MS", Font.BOLD, 25));
             dCardSlots.setHorizontalAlignment(SwingConstants.LEADING);
             dCardSlots.setVerticalAlignment(SwingConstants.TOP);
             Color cardColor;
-            if (c.getSuit() == ' ') {
-                cardColor = Color.LIGHT_GRAY;
+            if (c.getSuit() == ' ' || dBust) {
+                cardColor = Color.DARK_GRAY;
                 dCardSlots.setBackground(Color.LIGHT_GRAY);
             } else if (c.getSuit() == '♤' || c.getSuit() == '♧') {
                 cardColor = Color.BLACK;
+                dCardSlots.setBackground(new Color(255,250,240));
             } else {
                 cardColor = Color.RED;
+                dCardSlots.setBackground(new Color(255,250,240));
             }
             dCardSlots.setForeground(cardColor);
             dCardSlots.setBorder(BorderFactory.createLineBorder(cardColor, 5));
             dealerSide.add(dCardSlots);
         }
-
-        System.out.println();
-        System.out.println(user.getPlayerName() + "'s Hand:");
+        
         for (Card c: userCards) {
             uCardSlots = new JLabel(" " + c.getRank() + c.getSuit());
             uCardSlots.setPreferredSize(new Dimension(150,230));
             uCardSlots.setOpaque(true);
-            uCardSlots.setBackground(new Color(255,250,240));
             uCardSlots.setFont(new Font("Arial Unicode MS", Font.BOLD, 25));
             uCardSlots.setHorizontalAlignment(SwingConstants.LEADING);
             uCardSlots.setVerticalAlignment(SwingConstants.TOP);
             Color cardColor;
-            if (c.getSuit() == ' ') {
-                cardColor = Color.LIGHT_GRAY;
+            if (c.getSuit() == ' ' || uBust) {
+                cardColor = Color.DARK_GRAY;
                 uCardSlots.setBackground(Color.LIGHT_GRAY);
             }
             else if (c.getSuit() == '♤' || c.getSuit() == '♧') {
                 cardColor = Color.BLACK;
+                uCardSlots.setBackground(new Color(255,250,240));
             } else {
                 cardColor = Color.RED;
+                uCardSlots.setBackground(new Color(255,250,240));
             }
             uCardSlots.setForeground(cardColor);
             uCardSlots.setBorder(BorderFactory.createLineBorder(cardColor, 5));
             userSide.add(uCardSlots);
         }
-        System.out.println("--------------------------------------");
     }
 
     public static void waitForRoundStart() {
         start = false;
 
         startRound = new JButton("Deal Out");
-        startRound.setLocation(screenWidth / 2 - 125, screenHeight / 6 - 50);
+        startRound.setLocation(screenWidth / 2 - 125, screenHeight / 6 - 60);
         startRound.setSize(250,100);
         startRound.setBackground(Color.LIGHT_GRAY);
         startRound.setFont(new Font("Arial", Font.BOLD, 25));
@@ -203,20 +218,25 @@ public class BJTable implements OnScreen {
         divider.add(startRound);
 
         while(start == false) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+            GameLoop.wait(100);
+        }
+
+        divider.remove(startRound);
+
+        for (Component c: divider.getComponents()) {
+            if (((JLabel) c).getText().equals("Busted!")) {
+                divider.remove(c);
             }
         }
-        divider.remove(startRound);
+        infoScreen.setText("Game in Progress");
+        
     }
 
     public static String promptDecision() {
         decision = null;
 
         chooseHit = new JButton("HIT");
-        chooseHit.setLocation(screenWidth / 2 - 375, screenHeight / 6 - 50);
+        chooseHit.setLocation(screenWidth / 2 - 375, screenHeight / 6 - 60);
         chooseHit.setSize(250,100);
         chooseHit.setBackground(Color.LIGHT_GRAY);
         chooseHit.setFont(new Font("Arial", Font.BOLD, 25));
@@ -227,12 +247,11 @@ public class BJTable implements OnScreen {
             @Override
             public void actionPerformed(ActionEvent e) {
                 decision = "hit";
-                System.out.println("i hitted");
             }
         });
 
         chooseStand = new JButton("STAND");
-        chooseStand.setLocation(screenWidth / 2 + 125, screenHeight / 6 - 50);
+        chooseStand.setLocation(screenWidth / 2 + 125, screenHeight / 6 - 60);
         chooseStand.setSize(250,100);
         chooseStand.setBackground(Color.LIGHT_GRAY);
         chooseStand.setFont(new Font("Arial", Font.BOLD, 25));
@@ -250,14 +269,57 @@ public class BJTable implements OnScreen {
         divider.add(chooseStand);
 
         while(decision == null) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+            GameLoop.wait(100);
         }
         divider.remove(chooseHit);
         divider.remove(chooseStand);
         return decision;
+    }
+
+    public static void showBusted(Player p) {
+
+        uSayBust = new JLabel("Busted!");
+        dSayBust = new JLabel("Busted!");
+
+        if (p.getPlayerName().equals("Dealer")) {
+            dSayBust.setLocation(screenWidth / 2 - 75, 25);
+            dSayBust.setSize(150,75);
+            dSayBust.setBackground(Color.LIGHT_GRAY);
+            dSayBust.setForeground(Color.RED);
+            dSayBust.setFont(new Font("Arial", Font.BOLD, 25));
+            dSayBust.setHorizontalAlignment(SwingConstants.CENTER);
+            dSayBust.setVerticalAlignment(SwingConstants.CENTER);
+            divider.add(dSayBust);
+        } else {
+            uSayBust.setLocation(screenWidth / 2 - 75, screenHeight / 3 - 124);
+            uSayBust.setSize(150,75);
+            uSayBust.setBackground(Color.LIGHT_GRAY);
+            uSayBust.setForeground(Color.RED);
+            uSayBust.setFont(new Font("Arial", Font.BOLD, 25));
+            uSayBust.setHorizontalAlignment(SwingConstants.CENTER);
+            uSayBust.setVerticalAlignment(SwingConstants.CENTER);
+            divider.add(uSayBust);
+        }
+        
+        GameLoop.wait(1000);
+    }
+
+    public static void showWinner(Player w, Player l) {
+
+        if (w == null) {
+            infoScreen.setText("It's a Draw!");
+        } else {
+            String scoreW = String.valueOf(w.getHandValue());
+            if (w.getHandValue() > 21) {
+                scoreW = "BUST";
+            }
+            
+            String scoreL = String.valueOf(l.getHandValue());
+            if (l.getHandValue() > 21) {
+                scoreL = "BUST";
+            }
+
+            infoScreen.setText(w.getPlayerName() + " Wins! " + scoreW + " - " + scoreL);
+        }
     }
 }
