@@ -1,2 +1,1 @@
-"# CardGame" 
-I will create BlackJack with my coding prowess.
+I am nothing without Georgi.
